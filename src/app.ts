@@ -14,6 +14,9 @@ const app: Express = express();
 
 app.use(cors());
 
+app.get("/", (req, res) => {
+  res.send("Welcome to the Pharmacy API"); 
+});
 
 app.use("/auth", authRoutes);
 app.use("/products", productRoutes);

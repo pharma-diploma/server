@@ -1,5 +1,5 @@
 import express from "express";
-import Pharmacy from "../models/Pharmacy.model";
+import Pharmacy from "../models/Pharmacy.model.js";
 
 const router = express.Router();
 

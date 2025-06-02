@@ -1,7 +1,7 @@
 import express from "express";
-import Pharmacy from "../models/Pharmacy.model";
-import Product from "../models/Product.model";
-import PharmacyProduct from "../models/PharmacyProduct.model";
+import Pharmacy from "../models/Pharmacy.model.js";
+import Product from "../models/Product.model.js";
+import PharmacyProduct from "../models/PharmacyProduct.model.js";
 
 const router = express.Router();
 
