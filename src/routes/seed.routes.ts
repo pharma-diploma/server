@@ -19,7 +19,8 @@ router.post("/", async (req, res) => {
       {
         name: "Аптека АНЦ",
         address: "просп. Дмитрия Яворницкого, 50",
-        image: "https://encrypted-tbn0.gstatic.c=tbn:ANd9GcSXY-3fzJHk9HaRu3zahLHl_D4jYgpNPYVYsQ&s",
+        image: "https://pharma-tmp.s3.us-east-1.amazonaws.com/pharmacy-anc.png",
+        logo: "https://pharma-tmp.s3.us-east-1.amazonaws.com/logo/84ee8c860c8b2cda7f1f3ad00ec63497affad37d+(1).jpg",
         coordinates: { lat: 48.464717, lng: 35.046183 },
         workingHours: {
           mon: { open: "08:00", close: "20:00" },
@@ -34,7 +35,8 @@ router.post("/", async (req, res) => {
       {
         name: "Аптека Доброго дня",
         address: "просп. Героев, 12",
-        image: "https://www.apteka.ua/wp/wp-content/uploads/2018/10/928395892351-1.jpg",
+        image: "https://pharma-tmp.s3.us-east-1.amazonaws.com/pharmacy-green.png",
+        logo: "https://pharma-tmp.s3.us-east-1.amazonaws.com/logo/3a311e052a66a8c12ec0fda42222f1bde053b5ba+(2).jpg",
         coordinates: { lat: 48.425798, lng: 35.021785 },
         workingHours: {
           mon: { open: "08:00", close: "21:00" },
@@ -49,7 +51,8 @@ router.post("/", async (req, res) => {
       {
         name: "Аптека 911",
         address: "ул. Паникахи, 2",
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4xfVUaIdtSf3NOSpef96iF3vcI_rsybexhQ&s",
+        image: "https://pharma-tmp.s3.us-east-1.amazonaws.com/pharmacy-911.png",
+        logo: "https://pharma-tmp.s3.us-east-1.amazonaws.com/logo/dc2cca03fcfceb686a831c1543d8d6b756112554+(1).png",
         coordinates: { lat: 48.464000, lng: 35.005000 },
         workingHours: {
           mon: { open: "09:00", close: "19:00" },
