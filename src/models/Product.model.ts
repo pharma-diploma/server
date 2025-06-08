@@ -7,6 +7,7 @@ export interface IProduct extends Document {
     category: string;
     prescriptionRequired: boolean;
     image: string;
+    _doc?: any;
 }
 
 const ProductSchema = new Schema<IProduct>(

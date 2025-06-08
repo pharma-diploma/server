@@ -1,6 +1,7 @@
 import express from "express";
-import Product from "../models/Product.model.js";
-import PharmacyProduct from "../models/PharmacyProduct.model.js";
+import Product, { IProduct } from "../models/Product.model.js";
+import PharmacyProduct, { IPharmacyProduct } from "../models/PharmacyProduct.model.js";
+import ProductModel from "../models/Product.model.js";
 
 const router = express.Router();
 
@@ -24,9 +25,26 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
-    if (!product) return res.status(404).json({ message: "Not found" });
-    res.json(product);
+    const pharmacyProduct: IPharmacyProduct | null = await PharmacyProduct.findById(req.params.id);
+    if (!pharmacyProduct) return res.status(404).json({ message: "Not found" });
+
+    const product: IProduct | null = await ProductModel.findById(pharmacyProduct.product);
+    if (!product) return res.status(404).json({message: "Not found"});
+    // Найти минимальную и максимальную цену для этого продукта во всех аптеках
+    const prices = await PharmacyProduct.find({ product: product._id }).select("price").lean();
+    let minPrice = null;
+    let maxPrice = null;
+    if (prices.length > 0) {
+      const priceValues = prices.map(p => p.price);
+      minPrice = Math.min(...priceValues);
+      maxPrice = Math.max(...priceValues);
+    }
+
+    res.json({
+      ...product._doc,
+      minPrice,
+      maxPrice,
+    });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
@@ -83,6 +101,7 @@ router.get("/pharmacy/:pharmacyId", async (req, res) => {
       .sort({ "product.name": 1 });
     const products = pharmacyProducts.map((pp: any) => ({
       ...pp.product._doc,
+      _id: pp._id,
       price: pp.price,
       stock: pp.stock,
       expirationDate: pp.expirationDate,
@@ -101,6 +120,7 @@ router.get("/pharmacy/:pharmacyId/popular", async (req, res) => {
       .limit(5);
     const products = pharmacyProducts.map((pp: any) => ({
       ...pp.product._doc,
+      _id: pp._id,
       price: pp.price,
       stock: pp.stock,
       expirationDate: pp.expirationDate,
@@ -122,6 +142,7 @@ router.get("/pharmacy/:pharmacyId/new", async (req, res) => {
     const products = pharmacyProducts
       .map((pp: any) => ({
         ...pp.product._doc,
+        _id: pp._id,
         price: pp.price,
         stock: pp.stock,
         expirationDate: pp.expirationDate,
