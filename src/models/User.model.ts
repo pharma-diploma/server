@@ -7,6 +7,11 @@ export interface IUser extends Document {
     password: string;
     name?: string;
     createdAt: Date;
+    notifications?: {
+      sales: boolean;
+      orderStatus: boolean;
+      deliveryMessage: boolean;
+    };
     _doc: any;
 }
 
@@ -25,6 +30,20 @@ const UserSchema = new mongoose.Schema({
   name: {
     type: String,
     required: false
+  },
+  notifications: {
+    sales: {
+      type: Boolean,
+      default: true,
+    },
+    orderStatus: {
+      type: Boolean,
+      default: true,
+    },
+    deliveryMessage: {
+      type: Boolean,
+      default: true,
+    },
   },
   createdAt: {
     type: Date,

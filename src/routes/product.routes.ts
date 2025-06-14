@@ -153,4 +153,35 @@ router.get("/pharmacy/:pharmacyId/new", async (req, res) => {
   }
 });
 
+// Поиск продукта по названию внутри конкретной аптеки (ответ как у популярных)
+router.get("/pharmacy/:pharmacyId/search/:name", async (req, res) => {
+  try {
+    const { pharmacyId, name } = req.params;
+    const regex = new RegExp(name, "i");
+
+    // Находим PharmacyProduct для нужной аптеки и по совпадению имени продукта
+    const pharmacyProducts = await PharmacyProduct.find({ pharmacy: pharmacyId })
+      .populate({
+        path: "product",
+        match: { name: regex }
+      })
+      .populate("pharmacy");
+
+    // Оставляем только те, где продукт найден
+    const products = pharmacyProducts
+      .filter(pp => pp.product)
+      .map((pp: any) => ({
+        ...pp.product._doc,
+        _id: pp._id,
+        price: pp.price,
+        stock: pp.stock,
+        expirationDate: pp.expirationDate,
+      }));
+
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 export default router;
