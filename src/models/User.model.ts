@@ -12,6 +12,7 @@ export interface IUser extends Document {
       orderStatus: boolean;
       deliveryMessage: boolean;
     };
+    role: "user" | "admin" | "courier";
     _doc: any;
 }
 
@@ -44,6 +45,11 @@ const UserSchema = new mongoose.Schema({
       type: Boolean,
       default: true,
     },
+  },
+  role: {
+    type: String,
+    enum: ["user", "admin", "courier"],
+    default: "user"
   },
   createdAt: {
     type: Date,

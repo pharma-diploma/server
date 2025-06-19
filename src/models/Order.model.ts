@@ -10,6 +10,7 @@ export interface IOrder extends Document {
   items: IOrderItem[];
   status: string;
   total: number;
+  courier?: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -26,8 +27,9 @@ const OrderSchema = new Schema<IOrder>(
   {
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     items: [OrderItemSchema],
-    status: { type: String, default: "pending" }, // pending, paid, shipped, completed, cancelled
+    status: { type: String, default: "pending" },
     total: { type: Number, required: true },
+    courier: { type: Schema.Types.ObjectId, ref: "User" },
   },
   { timestamps: true }
 );
