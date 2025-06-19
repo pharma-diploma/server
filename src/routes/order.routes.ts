@@ -2,12 +2,15 @@ import express, { NextFunction, Response } from "express";
 import Order from "../models/Order.model.js";
 import Cart from "../models/Cart.model.js";
 import PharmacyProduct from "../models/PharmacyProduct.model.js";
+import verifyJWT from "../middlewares/verifyJWT.js";
 
 const router = express.Router();
 
 // Пример middleware
 function courierOnly(req: any, res: Response, next: NextFunction) {
-  if (req.user?.role !== "courier") {
+  console.log("Role", req.role);
+  if (req.role !== "courier") {
+    console.log("Access denied for non-courier user");
     return res.status(403).json({ message: "Access denied" });
   }
   next();
@@ -83,6 +86,7 @@ router.get("/:orderId", async (req, res) => {
 router.patch("/:orderId/status", async (req, res) => {
   try {
     const { status } = req.body;
+    console.log(status);
     const order = await Order.findByIdAndUpdate(
       req.params.orderId,
       { status },
@@ -114,15 +118,16 @@ router.patch("/:orderId/status", async (req, res) => {
 });
 
 // Курьер берёт заказ
-router.post("/:orderId/take", courierOnly, async (req, res) => {
+router.post("/:orderId/take", verifyJWT, courierOnly, async (req, res) => {
   try {
     const { courierId } = req.body;
     const order = await Order.findById(req.params.orderId);
+    console.log(order);
     if (!order) return res.status(404).json({ message: "Order not found" });
     if (order.courier) return res.status(400).json({ message: "Order already taken" });
 
     order.courier = courierId;
-    order.status = "delivery";
+    order.status = "taking";
     await order.save();
 
     // Оповещение клиента (и курьера, если нужно)

@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post("/register", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -20,6 +20,7 @@ router.post("/register", async (req, res) => {
     const user = await User.create({
       email,
       password: hashedPassword,
+      role: role || "user",
     });
 
     res.status(201).json(user);
@@ -43,11 +44,11 @@ router.post("/login", async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
-
+    console.log(user.role)
     const token = jwt.sign(
-      { userId: user._id, email: user.email },
-      process.env.JWT_SECRET || "secretkey",
-      { expiresIn: "1h" }
+      { userId: user._id, email: user.email, role: user.role },
+      process.env.ACCESS_TOKEN_SECRET as string,
+      { expiresIn: "30d" }
     );
 
     res.json({ token, ...user._doc });
