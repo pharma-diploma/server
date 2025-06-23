@@ -19,6 +19,7 @@ function courierOnly(req: any, res: Response, next: NextFunction) {
 // Создать заказ из корзины пользователя
 router.post("/:userId", async (req, res) => {
   try {
+    const { location } = req.body;
     const cart = await Cart.findOne({ user: req.params.userId });
     if (!cart || cart.items.length === 0) {
       return res.status(400).json({ message: "Cart is empty" });
@@ -34,12 +35,13 @@ router.post("/:userId", async (req, res) => {
       if (found) total += found.price;
       return { pharmacyProduct: pharmacyProductId, quantity: 1 };
     });
-
+    console.log(location);
     const order = await Order.create({
       user: req.params.userId,
       items,
       total,
       status: "pending",
+      location, // сохраняем локацию
     });
 
     // Очищаем корзину
@@ -121,6 +123,7 @@ router.patch("/:orderId/status", async (req, res) => {
 router.post("/:orderId/take", verifyJWT, courierOnly, async (req, res) => {
   try {
     const { courierId } = req.body;
+    console.log(courierId);
     const order = await Order.findById(req.params.orderId);
     console.log(order);
     if (!order) return res.status(404).json({ message: "Order not found" });
@@ -147,6 +150,7 @@ router.post("/:orderId/take", verifyJWT, courierOnly, async (req, res) => {
 
     res.json(order);
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -172,7 +176,7 @@ router.get("/active/unassigned", async (req, res) => {
     console.log("Fetch orders without courier");
     const orders = await Order.find({
       courier: { $exists: false },
-      status: { $nin: ["completed", "cancelled"] }
+      status: { $nin: ["finish", "cancelled"] }
     })
       .populate({
         path: "items.pharmacyProduct",

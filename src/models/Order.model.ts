@@ -11,6 +11,13 @@ export interface IOrder extends Document {
   status: string;
   total: number;
   courier?: Types.ObjectId;
+  location: {
+    address: string;
+    coordinates: {
+      lat: number;
+      lng: number;
+    };
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -30,6 +37,13 @@ const OrderSchema = new Schema<IOrder>(
     status: { type: String, default: "pending" },
     total: { type: Number, required: true },
     courier: { type: Schema.Types.ObjectId, ref: "User" },
+    location: {
+      address: { type: String, required: true },
+      coordinates: {
+        lat: { type: Number, required: true },
+        lng: { type: Number, required: true },
+      },
+    },
   },
   { timestamps: true }
 );
